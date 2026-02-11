@@ -1,5 +1,5 @@
 # GoVM Installation Script for Windows
-# Usage: Invoke-WebRequest -Uri "https://raw.githubusercontent.com/yourusername/govm/master/scripts/install.ps1" -OutFile "install.ps1"; .\install.ps1
+# Usage: Invoke-WebRequest -Uri "https://raw.githubusercontent.com/wangystrive/govm/master/scripts/install.ps1" -OutFile "install.ps1"; .\install.ps1
 
 param(
     [string]$Version = "latest",
@@ -102,7 +102,7 @@ function Install-Govm {
     Remove-Item -Path $tempFile -Force -ErrorAction SilentlyContinue
     Remove-Item -Path $tempDir -Recurse -Force -ErrorAction SilentlyContinue
     
-    Write-Success "�?govm installed successfully!"
+    Write-Success "govm installed successfully!"
 }
 
 # Add to PATH
@@ -138,7 +138,7 @@ function Test-Installation {
 # Print post-installation message
 function Show-PostInstall {
     Write-Host ""
-    Write-Success "🎉 GoVM installation complete!"
+    Write-Success "GoVM installation complete!"
     Write-Host ""
     Write-Info "Quick start:"
     Write-Host "  govm list-remote     # List available Go versions"
@@ -156,7 +156,7 @@ function Show-PostInstall {
 
 # Main
 function Main {
-    Write-Info "🚀 GoVM Installer for Windows"
+    Write-Info "GoVM Installer for Windows"
     Write-Host ""
     
     $platform = Get-Platform

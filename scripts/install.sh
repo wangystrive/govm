@@ -1,6 +1,6 @@
 #!/bin/bash
 # GoVM Installation Script
-# Usage: curl -fsSL https://raw.githubusercontent.com/yourusername/govm/master/scripts/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/wangystrive/govm/master/scripts/install.sh | bash
 
 set -e
 
@@ -124,7 +124,7 @@ download_and_install() {
     chmod +x "$GOVM_BIN"
     rm -rf "$temp_dir"
     
-    echo -e "${GREEN}�?govm installed successfully!${NC}"
+    echo -e "${GREEN}govm installed successfully!${NC}"
 }
 
 # Verify installation
@@ -145,7 +145,7 @@ verify_installation() {
 # Print post-installation message
 print_post_install() {
     echo ""
-    echo -e "${GREEN}🎉 GoVM installation complete!${NC}"
+    echo -e "${GREEN}GoVM installation complete!${NC}"
     echo ""
     echo -e "${BLUE}Quick start:${NC}"
     echo "  govm list-remote     # List available Go versions"
@@ -174,7 +174,7 @@ print_post_install() {
 
 # Main
 main() {
-    echo -e "${BLUE}🚀 GoVM Installer${NC}"
+    echo -e "${BLUE}GoVM Installer${NC}"
     echo ""
     
     detect_platform
