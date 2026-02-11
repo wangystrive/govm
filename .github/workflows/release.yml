@@ -1,15 +1,16 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
     inputs:
       version:
         description: 'Version to release (e.g., v0.1.0)'
+        type: string
         required: true
         default: 'v0.1.0'
+  push:
+    tags:
+      - 'v*'
 
 env:
   CARGO_TERM_COLOR: always
