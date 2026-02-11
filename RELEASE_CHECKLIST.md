@@ -52,10 +52,10 @@ Use this checklist when creating a new release of GoVM.
 - [ ] Verify installation scripts work:
   ```bash
   # Unix
-  curl -fsSL https://raw.githubusercontent.com/yourusername/govm/main/scripts/install.sh | bash
+  curl -fsSL https://raw.githubusercontent.com/wangystrive/govm/main/scripts/install.sh | bash
   
   # Windows
-  Invoke-WebRequest -Uri "https://raw.githubusercontent.com/yourusername/govm/main/scripts/install.ps1" -OutFile "install.ps1"; .\install.ps1
+  Invoke-WebRequest -Uri "https://raw.githubusercontent.com/wangystrive/govm/main/scripts/install.ps1" -OutFile "install.ps1"; .\install.ps1
   ```
 - [ ] Close milestone if using GitHub milestones
 - [ ] Announce release (if applicable)
@@ -66,14 +66,14 @@ Ensure all platforms build successfully:
 
 | Platform | Architecture | Status |
 |----------|-------------|--------|
-| Linux | x86_64 (gnu) | â¬œ |
-| Linux | x86_64 (musl) | â¬œ |
-| Linux | ARM64 | â¬œ |
-| Linux | ARMv7 | â¬œ |
-| macOS | x86_64 | â¬œ |
-| macOS | ARM64 (Apple Silicon) | â¬œ |
-| Windows | x86_64 | â¬œ |
-| Windows | x86 | â¬œ |
+| Linux | x86_64 (gnu) | â¬?|
+| Linux | x86_64 (musl) | â¬?|
+| Linux | ARM64 | â¬?|
+| Linux | ARMv7 | â¬?|
+| macOS | x86_64 | â¬?|
+| macOS | ARM64 (Apple Silicon) | â¬?|
+| Windows | x86_64 | â¬?|
+| Windows | x86 | â¬?|
 
 ## Artifact Checklist
 

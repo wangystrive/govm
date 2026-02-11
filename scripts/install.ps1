@@ -9,7 +9,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 # Configuration
-$Repo = "yourusername/govm"
+$Repo = "wangystrive/govm"
 $GovmExe = Join-Path $InstallDir "govm.exe"
 
 # Colors

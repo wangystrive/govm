@@ -5,7 +5,7 @@
 set -e
 
 # Configuration
-REPO="yourusername/govm"
+REPO="wangystrive/govm"
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
 GOVM_BIN="${INSTALL_DIR}/govm"
 
