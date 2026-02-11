@@ -1,6 +1,6 @@
 #!/bin/bash
 # GoVM Installation Script
-# Usage: curl -fsSL https://raw.githubusercontent.com/yourusername/govm/main/scripts/install.sh | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/yourusername/govm/master/scripts/install.sh | bash
 
 set -e
 
@@ -124,7 +124,7 @@ download_and_install() {
     chmod +x "$GOVM_BIN"
     rm -rf "$temp_dir"
     
-    echo -e "${GREEN}âœ… govm installed successfully!${NC}"
+    echo -e "${GREEN}âœ?govm installed successfully!${NC}"
 }
 
 # Verify installation

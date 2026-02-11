@@ -1,5 +1,5 @@
 # GoVM Installation Script for Windows
-# Usage: Invoke-WebRequest -Uri "https://raw.githubusercontent.com/yourusername/govm/main/scripts/install.ps1" -OutFile "install.ps1"; .\install.ps1
+# Usage: Invoke-WebRequest -Uri "https://raw.githubusercontent.com/yourusername/govm/master/scripts/install.ps1" -OutFile "install.ps1"; .\install.ps1
 
 param(
     [string]$Version = "latest",
@@ -102,7 +102,7 @@ function Install-Govm {
     Remove-Item -Path $tempFile -Force -ErrorAction SilentlyContinue
     Remove-Item -Path $tempDir -Recurse -Force -ErrorAction SilentlyContinue
     
-    Write-Success "âœ… govm installed successfully!"
+    Write-Success "âœ?govm installed successfully!"
 }
 
 # Add to PATH
