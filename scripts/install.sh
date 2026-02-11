@@ -16,7 +16,7 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Detect OS and architecture
+# Detect OS and architecture, return Go-style platform name
 detect_platform() {
     local os
     local arch
@@ -28,13 +28,16 @@ detect_platform() {
         linux)
             case "$arch" in
                 x86_64)
-                    PLATFORM="x86_64-unknown-linux-gnu"
+                    PLATFORM="linux-amd64"
+                    ;;
+                i386|i686)
+                    PLATFORM="linux-386"
                     ;;
                 aarch64|arm64)
-                    PLATFORM="aarch64-unknown-linux-gnu"
+                    PLATFORM="linux-arm64"
                     ;;
-                armv7l)
-                    PLATFORM="armv7-unknown-linux-gnueabihf"
+                armv7l|armv6l)
+                    PLATFORM="linux-armv6l"
                     ;;
                 *)
                     echo -e "${RED}Unsupported architecture: $arch${NC}"
@@ -45,10 +48,21 @@ detect_platform() {
         darwin)
             case "$arch" in
                 x86_64)
-                    PLATFORM="x86_64-apple-darwin"
+                    PLATFORM="darwin-amd64"
                     ;;
                 arm64)
-                    PLATFORM="aarch64-apple-darwin"
+                    PLATFORM="darwin-arm64"
+                    ;;
+                *)
+                    echo -e "${RED}Unsupported architecture: $arch${NC}"
+                    exit 1
+                    ;;
+            esac
+            ;;
+        freebsd)
+            case "$arch" in
+                x86_64)
+                    PLATFORM="freebsd-amd64"
                     ;;
                 *)
                     echo -e "${RED}Unsupported architecture: $arch${NC}"

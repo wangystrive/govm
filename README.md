@@ -1,20 +1,20 @@
 # GoVM - Go Version Manager
 
-一个用 Rust 编写�?Go 多版本管理工具，类似�?`nvm` �?`pyenv`�?
+一个用 Rust 编写的 Go 多版本管理工具，类似于 `nvm` 或 `pyenv`。
 
-## 功能特�?
+## 功能特性
 
-- 📦 **安装/卸载** - 轻松安装或卸载任�?Go 版本
+- 📦 **安装/卸载** - 轻松安装或卸载任意 Go 版本
 - 🔄 **版本切换** - 快速在不同 Go 版本之间切换
-- 📋 **版本列表** - 查看已安装和远程可用�?Go 版本
+- 📋 **版本列表** - 查看已安装和远程可用的 Go 版本
 - 🎯 **当前版本** - 显示当前激活的 Go 版本
 - 🔍 **系统兼容** - 检测并导入系统已安装的 Go
-- ⚠️ **冲突检�?* - 自动检�?PATH 冲突并给出提�?
-- 🌍 **全平台支�?* - 支持 Go 官方支持的所有平�?
+- ⚠️ **冲突检测** - 自动检测 PATH 冲突并给出提示
+- 🌍 **全平台支持** - 支持 Go 官方支持的所有平台
 
 ## 安装
 
-### 快速安装（推荐�?
+### 快速安装（推荐）
 
 #### macOS / Linux
 
@@ -28,7 +28,7 @@ curl -fsSL https://raw.githubusercontent.com/wangystrive/govm/master/scripts/ins
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/wangystrive/govm/master/scripts/install.ps1" -OutFile "install.ps1"; .\install.ps1
 ```
 
-### 从源码编�?
+### 从源码编译
 
 ```bash
 # 克隆仓库
@@ -44,18 +44,18 @@ make install  # Linux/macOS
 
 ### 手动下载
 
-�?[Releases](https://github.com/wangystrive/govm/releases) 页面下载对应平台的预编译二进制文件�?
+从 [Releases](https://github.com/wangystrive/govm/releases) 页面下载对应平台的预编译二进制文件。
 
 #### Linux
 
 ```bash
-# 下载（根据你的架构选择�?
-wget https://github.com/wangystrive/govm/releases/latest/download/govm-x86_64-unknown-linux-gnu.tar.gz
+# 下载（根据你的架构选择）
+wget https://github.com/wangystrive/govm/releases/latest/download/govm-linux-amd64.tar.gz
 
 # 解压
-tar xzf govm-x86_64-unknown-linux-gnu.tar.gz
+tar xzf govm-linux-amd64.tar.gz
 
-# 移动�?PATH 目录
+# 移动到 PATH 目录
 sudo mv govm /usr/local/bin/
 ```
 
@@ -63,13 +63,13 @@ sudo mv govm /usr/local/bin/
 
 ```bash
 # Intel Mac
-wget https://github.com/wangystrive/govm/releases/latest/download/govm-x86_64-apple-darwin.tar.gz
-tar xzf govm-x86_64-apple-darwin.tar.gz
+wget https://github.com/wangystrive/govm/releases/latest/download/govm-darwin-amd64.tar.gz
+tar xzf govm-darwin-amd64.tar.gz
 sudo mv govm /usr/local/bin/
 
 # Apple Silicon Mac
-wget https://github.com/wangystrive/govm/releases/latest/download/govm-aarch64-apple-darwin.tar.gz
-tar xzf govm-aarch64-apple-darwin.tar.gz
+wget https://github.com/wangystrive/govm/releases/latest/download/govm-darwin-arm64.tar.gz
+tar xzf govm-darwin-arm64.tar.gz
 sudo mv govm /usr/local/bin/
 ```
 
@@ -77,12 +77,12 @@ sudo mv govm /usr/local/bin/
 
 ```powershell
 # 下载
-Invoke-WebRequest -Uri "https://github.com/wangystrive/govm/releases/latest/download/govm-x86_64-pc-windows-msvc.zip" -OutFile "govm.zip"
+Invoke-WebRequest -Uri "https://github.com/wangystrive/govm/releases/latest/download/govm-windows-amd64.zip" -OutFile "govm.zip"
 
 # 解压
 Expand-Archive -Path "govm.zip" -DestinationPath "$env:LOCALAPPDATA\govm\bin"
 
-# 添加�?PATH
+# 添加到 PATH
 [Environment]::SetEnvironmentVariable("Path", "$env:LOCALAPPDATA\govm\bin;$env:Path", "User")
 ```
 
@@ -100,13 +100,13 @@ govm --help
 govm list
 ```
 
-### 列出远程可用的版�?
+### 列出远程可用的版本
 
 ```bash
 govm list-remote
 ```
 
-### 安装指定版本�?Go
+### 安装指定版本的 Go
 
 ```bash
 # 安装 Go 1.21.5
@@ -116,13 +116,13 @@ govm install 1.21.5
 govm install go1.21.5
 ```
 
-### 切换到指定版�?
+### 切换到指定版本
 
 ```bash
 govm use 1.21.5
 ```
 
-**注意�?* 切换版本后，需要确�?GoVM �?bin 目录�?PATH 中才能使用。程序会提示你添加以下路径：
+**注意：** 切换版本后，需要确保 GoVM 的 bin 目录在 PATH 中才能使用。程序会提示你添加以下路径：
 - Windows: `%LOCALAPPDATA%\govm\current\bin`
 - Linux/macOS: `$HOME/.govm/current/bin`
 
@@ -148,31 +148,31 @@ govm clean
 
 ### Windows
 
-将以下路径添加到系统 PATH 环境变量�?
+将以下路径添加到系统 PATH 环境变量：
 
 ```
 %LOCALAPPDATA%\govm\current\bin
 ```
 
-**手动设置步骤�?*
-1. 右键"此电�? �?属�?�?高级系统设置
-2. 环境变量 �?用户变量 �?Path �?编辑
+**手动设置步骤：**
+1. 右键"此电脑" → 属性 → 高级系统设置
+2. 环境变量 → 用户变量 → Path → 编辑
 3. 添加新条目：`%LOCALAPPDATA%\govm\current\bin`
-4. 确保这个条目在系�?Go 路径之前（如果有系统 Go�?
-5. 确定保存，重启终�?
+4. 确保这个条目在系统 Go 路径之前（如果有系统 Go）
+5. 确定保存，重启终端
 
 ### Linux/macOS
 
-添加到你�?shell 配置文件（`.bashrc`, `.zshrc` 等）�?
+添加到你的 shell 配置文件（`.bashrc`, `.zshrc` 等）：
 
 ```bash
 export PATH="$HOME/.govm/current/bin:$PATH"
 ```
 
-然后重新加载配置�?
+然后重新加载配置：
 
 ```bash
-source ~/.bashrc  # �?source ~/.zshrc
+source ~/.bashrc  # 或 source ~/.zshrc
 ```
 
 ## 系统 Go 兼容
@@ -183,7 +183,7 @@ source ~/.bashrc  # �?source ~/.zshrc
 govm system
 ```
 
-输出示例�?
+输出示例：
 ```
 System Go Information
 
@@ -205,14 +205,14 @@ System Go Information
 govm import
 ```
 
-这将�?
-- 检测系统中�?Go 安装
-- 将其复制或链接到 GoVM 的版本目�?
-- 之后可以�?`govm use` 切换到这个版�?
+这将：
+- 检测系统中的 Go 安装
+- 将其复制或链接到 GoVM 的版本目录
+- 之后可以用 `govm use` 切换到这个版本
 
-### PATH 冲突检�?
+### PATH 冲突检测
 
-GoVM 会自动检测系�?Go 是否�?PATH 中优先级高于 GoVM。如果是，会显示警告�?
+GoVM 会自动检测系统 Go 是否在 PATH 中优先级高于 GoVM。如果是，会显示警告：
 
 ```
 ⚠️  WARNING: System Go appears before GoVM in your PATH.
@@ -223,12 +223,12 @@ GoVM 会自动检测系�?Go 是否�?PATH 中优先级高于 GoVM。如果是�
    - Unix: $HOME/.govm/current/bin
 ```
 
-## 快速开�?
+## 快速开始
 
 ### 全新安装
 
 ```bash
-# 1. 安装 govm（使用上面的安装命令�?
+# 1. 安装 govm（使用上面的安装命令）
 
 # 2. 安装 Go 版本
 govm install 1.21.5
@@ -236,8 +236,8 @@ govm install 1.21.5
 # 3. 切换到该版本
 govm use 1.21.5
 
-# 4. 配置环境变量（根据提示手动添加到 PATH�?
-# Windows: 添加 %LOCALAPPDATA%\govm\current\bin �?PATH
+# 4. 配置环境变量（根据提示手动添加到 PATH）
+# Windows: 添加 %LOCALAPPDATA%\govm\current\bin 到 PATH
 # Linux/macOS: export PATH="$HOME/.govm/current/bin:$PATH"
 
 # 5. 验证
@@ -253,19 +253,19 @@ govm import
 # 2. 查看已导入的版本
 govm list
 
-# 3. 配置环境变量（确�?GoVM 路径在系�?Go 之前�?
+# 3. 配置环境变量（确保 GoVM 路径在系统 Go 之前）
 
 # 4. 在版本间切换
 govm use 1.25.6  # 系统版本
 govm use 1.21.5  # 其他版本
 ```
 
-## 开�?
+## 开发
 
 ### 构建
 
 ```bash
-# 开发构�?
+# 开发构建
 cargo build
 
 # 发布构建
@@ -280,19 +280,17 @@ cargo test
 
 ### 交叉编译
 
-使用 [cross](https://github.com/cross-rs/cross) 进行交叉编译�?
+使用 [cross](https://github.com/cross-rs/cross) 进行交叉编译：
 
 ```bash
 # 安装 cross
 cargo install cross
 
-# 构建所有目�?
-make release-all
+# 构建所有目标
+make release
 
-# 或单独构�?
-cross build --release --target x86_64-unknown-linux-musl
-cross build --release --target aarch64-unknown-linux-gnu
-cross build --release --target x86_64-apple-darwin
+# 或单独构建
+cross build --release --target x86_64-unknown-linux-gnu
 ```
 
 ### Makefile 命令
@@ -301,8 +299,8 @@ cross build --release --target x86_64-apple-darwin
 make build        # 构建当前平台
 make test         # 运行测试
 make clean        # 清理构建产物
-make install      # 安装�?/usr/local/bin
-make release-all  # 构建所有平�?
+make install      # 安装到 /usr/local/bin
+make release      # 构建所有平台
 make setup        # 安装交叉编译目标
 ```
 
@@ -312,58 +310,58 @@ make setup        # 安装交叉编译目标
 $HOME/.govm/              # Unix 系统
 %LOCALAPPDATA%/govm/      # Windows 系统
 ├── versions/             # 存放所有安装的 Go 版本
-�?  ├── 1.20.0/
-�?  ├── 1.21.0/
-�?  └── 1.21.5/
-├── current/              # 当前激活的 Go 版本（符号链�?复制�?
+│   ├── 1.20.0/
+│   ├── 1.21.0/
+│   └── 1.21.5/
+├── current/              # 当前激活的 Go 版本（符号链接/复制）
 └── cache/                # 下载缓存
 ```
 
-## 工作流示�?
+## 工作流示例
 
 ### 日常开发工作流
 
 ```bash
-# 查看可用�?Go 版本
+# 查看可用的 Go 版本
 govm list-remote
 
-# 安装新版�?
+# 安装新版本
 govm install 1.21.5
 
 # 切换版本
 govm use 1.21.5
 
-# 验证安装（确保环境变量已配置�?
+# 验证安装（确保环境变量已配置）
 go version
 
-# 安装另一个版本用于测�?
+# 安装另一个版本用于测试
 govm install 1.20.0
 
 # 切换回旧版本
 govm use 1.20.0
 ```
 
-## 与其他工具共�?
+## 与其他工具共存
 
 ### 与官方安装包共存
 
-如果你使用官方的 MSI (Windows) �?PKG (macOS) 安装�?Go�?
+如果你使用官方的 MSI (Windows) 或 PKG (macOS) 安装了 Go：
 - 检测到这个安装
 - 通过 `govm import` 将其纳入管理
-- 或者在 `govm list` 中显示系统版�?
+- 或者在 `govm list` 中显示系统版本
 
-### 与包管理器共�?
+### 与包管理器共存
 
-对于通过 Homebrew、apt、yum 等安装的 Go�?
-- GoVM 会识别安装来�?
+对于通过 Homebrew、apt、yum 等安装的 Go：
+- GoVM 会识别安装来源
 - 你可以选择继续使用包管理器，或使用 GoVM 管理
-- 建议卸载包管理器�?Go，完全使�?GoVM 管理
+- 建议卸载包管理器的 Go，完全使用 GoVM 管理
 
 ## 常见问题
 
-### Q: 为什么切换版本后 `go` 命令没有变化�?
+### Q: 为什么切换版本后 `go` 命令没有变化？
 
-A: 你需要确�?GoVM �?bin 目录�?PATH 中优先级最高。检查：
+A: 你需要确保 GoVM 的 bin 目录在 PATH 中优先级最高。检查：
 
 ```bash
 # 查看 PATH 顺序
@@ -371,19 +369,19 @@ echo $PATH  # Unix
 $env:PATH   # PowerShell
 ```
 
-确保以下路径在系�?Go 路径之前�?
+确保以下路径在系统 Go 路径之前：
 - Windows: `%LOCALAPPDATA%\govm\current\bin`
 - Unix: `$HOME/.govm/current/bin`
 
-### Q: 如何完全替换系统 Go�?
+### Q: 如何完全替换系统 Go？
 
 A: 
 1. 导入现有 Go: `govm import`
-2. 卸载系统 Go (通过包管理器或删除安装目�?
-3. 添加 GoVM �?PATH
+2. 卸载系统 Go (通过包管理器或删除安装目录)
+3. 添加 GoVM 到 PATH
 4. 使用 `govm use <version>` 切换版本
 
-### Q: 支持哪些操作系统�?
+### Q: 支持哪些操作系统？
 
 A: GoVM 支持 Go 官方支持的所有平台：
 
@@ -394,11 +392,11 @@ A: GoVM 支持 Go 官方支持的所有平台：
 | Windows | amd64, 386, arm64 |
 | FreeBSD | amd64 |
 
-详见 [PLATFORMS.md](PLATFORMS.md) 获取完整列表和安装说明�?
+详见 [PLATFORMS.md](PLATFORMS.md) 获取完整列表和安装说明。
 
 ### Q: 下载很慢怎么办？
 
-A: GoVM 会从 Go 官方服务器下载，如果速度慢可以考虑使用代理。下载文件会缓存，多次安装同一版本不需要重新下载�?
+A: GoVM 会从 Go 官方服务器下载，如果速度慢可以考虑使用代理。下载文件会缓存，多次安装同一版本不需要重新下载。
 
 ## 发布
 
@@ -411,12 +409,12 @@ A: GoVM 会从 Go 官方服务器下载，如果速度慢可以考虑使用代�
 
 ### 触发手动构建
 
-�?GitHub Actions 页面手动触发 `release` 工作流�?
+在 GitHub Actions 页面手动触发 `Release` 工作流。
 
 ## 贡献
 
-欢迎提交 Issue �?Pull Request�?
+欢迎提交 Issue 和 Pull Request！
 
-## 许可�?
+## 许可证
 
 MIT License

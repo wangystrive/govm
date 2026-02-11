@@ -36,14 +36,14 @@ function Write-Warning($Message) {
     Write-Host "$Yellow$Message$Reset"
 }
 
-# Detect platform
+# Detect platform and return Go-style platform name
 function Get-Platform {
     $arch = $env:PROCESSOR_ARCHITECTURE
     
     switch ($arch) {
-        "AMD64" { return "x86_64-pc-windows-msvc" }
-        "x86" { return "i686-pc-windows-msvc" }
-        "ARM64" { return "aarch64-pc-windows-msvc" }
+        "AMD64" { return "windows-amd64" }
+        "x86" { return "windows-386" }
+        "ARM64" { return "windows-arm64" }
         default {
             Write-Error "Unsupported architecture: $arch"
             exit 1
