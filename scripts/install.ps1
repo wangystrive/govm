@@ -12,12 +12,13 @@ $ErrorActionPreference = "Stop"
 $Repo = "wangystrive/govm"
 $GovmExe = Join-Path $InstallDir "govm.exe"
 
-# Colors
-$Green = "`e[32m"
-$Red = "`e[31m"
-$Yellow = "`e[33m"
-$Blue = "`e[34m"
-$Reset = "`e[0m"
+# Colors (Compatible with PowerShell 5.1+)
+$ESC = [char]27
+$Green = "$ESC[32m"
+$Red = "$ESC[31m"
+$Yellow = "$ESC[33m"
+$Blue = "$ESC[34m"
+$Reset = "$ESC[0m"
 
 function Write-Info($Message) {
     Write-Host "$Blue$Message$Reset"
@@ -37,12 +38,12 @@ function Write-Warning($Message) {
 
 # Detect platform
 function Get-Platform {
-    $arch = [System.Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture
+    $arch = $env:PROCESSOR_ARCHITECTURE
     
     switch ($arch) {
-        "X64" { return "x86_64-pc-windows-msvc" }
-        "X86" { return "i686-pc-windows-msvc" }
-        "Arm64" { return "aarch64-pc-windows-msvc" }
+        "AMD64" { return "x86_64-pc-windows-msvc" }
+        "x86" { return "i686-pc-windows-msvc" }
+        "ARM64" { return "aarch64-pc-windows-msvc" }
         default {
             Write-Error "Unsupported architecture: $arch"
             exit 1
