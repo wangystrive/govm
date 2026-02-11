@@ -29,19 +29,19 @@ cargo test
 ```
 govm/
 ├── src/
-�?  ├── main.rs       # Entry point
-�?  ├── cli.rs        # CLI argument definitions
-�?  ├── version.rs    # Go version parsing
-�?  ├── download.rs   # Download functionality
-�?  ├── install.rs    # Install/uninstall
-�?  ├── switch.rs     # Version switching
-�?  ├── system_go.rs  # System Go detection
-�?  └── utils.rs      # Utilities
+│   ├── main.rs       # Entry point
+│   ├── cli.rs        # CLI argument definitions
+│   ├── version.rs    # Go version parsing
+│   ├── download.rs   # Download functionality
+│   ├── install.rs    # Install/uninstall
+│   ├── switch.rs     # Version switching
+│   ├── system_go.rs  # System Go detection
+│   └── utils.rs      # Utilities
 ├── scripts/
-�?  ├── install.sh    # Unix install script
-�?  └── install.ps1   # Windows install script
+│   ├── install.sh    # Unix install script
+│   └── install.ps1   # Windows install script
 ├── .github/workflows/
-�?  └── release.yml   # Release automation
+│   └── release.yml   # Release automation
 ├── Makefile          # Build automation
 └── Cross.toml        # Cross-compilation config
 ```
