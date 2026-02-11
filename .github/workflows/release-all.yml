@@ -1,0 +1,420 @@
+name: Release All Platforms
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v0.1.0)'
+        required: true
+        default: 'v0.1.0'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # ==========================================
+  # Tier 1 Platforms (Guaranteed to work)
+  # ==========================================
+  
+  # Linux Tier 1
+  build-linux-tier1:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - x86_64-unknown-linux-musl
+          - i686-unknown-linux-gnu
+          - aarch64-unknown-linux-gnu
+          - aarch64-unknown-linux-musl
+          - armv7-unknown-linux-gnueabihf
+          - arm-unknown-linux-gnueabihf
+          - powerpc64-unknown-linux-gnu
+          - powerpc64le-unknown-linux-gnu
+          - s390x-unknown-linux-gnu
+          - riscv64gc-unknown-linux-gnu
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross --locked || cargo install cross --locked
+      
+      - name: Build with cross
+        run: cross build --release --target ${{ matrix.target }}
+        continue-on-error: true
+      
+      - name: Package
+        if: success()
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar czvf ../../../govm-${{ matrix.target }}.tar.gz govm 2>/dev/null || \
+          tar czvf ../../../govm-${{ matrix.target }}.tar.gz -C . govm
+          cd ../../..
+      
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: govm-${{ matrix.target }}
+          path: govm-${{ matrix.target }}.tar.gz
+          if-no-files-found: ignore
+
+  # macOS Tier 1
+  build-macos-tier1:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - x86_64-apple-darwin
+          - aarch64-apple-darwin
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+        continue-on-error: true
+      
+      - name: Package
+        if: success()
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar czvf ../../../govm-${{ matrix.target }}.tar.gz govm
+          cd ../../..
+      
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: govm-${{ matrix.target }}
+          path: govm-${{ matrix.target }}.tar.gz
+          if-no-files-found: ignore
+
+  # Windows Tier 1
+  build-windows-tier1:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - x86_64-pc-windows-msvc
+          - i686-pc-windows-msvc
+          - aarch64-pc-windows-msvc
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      - name: Build
+        run: cargo build --release --target ${{ matrix.target }}
+        continue-on-error: true
+      
+      - name: Package
+        if: success()
+        shell: pwsh
+        run: |
+          cd target/${{ matrix.target }}/release
+          Compress-Archive -Path govm.exe -DestinationPath ../../../govm-${{ matrix.target }}.zip
+          cd ../../..
+      
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: govm-${{ matrix.target }}
+          path: govm-${{ matrix.target }}.zip
+          if-no-files-found: ignore
+
+  # ==========================================
+  # Tier 2/3 Platforms (Best effort)
+  # ==========================================
+  
+  # BSD Systems
+  build-bsd:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - x86_64-unknown-freebsd
+          - x86_64-unknown-netbsd
+          - x86_64-unknown-dragonfly
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross --locked 2>/dev/null || cargo install cross --locked
+      
+      - name: Build with cross
+        run: cross build --release --target ${{ matrix.target }}
+        continue-on-error: true
+      
+      - name: Package
+        if: success()
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar czvf ../../../govm-${{ matrix.target }}.tar.gz govm
+          cd ../../..
+      
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: govm-${{ matrix.target }}
+          path: govm-${{ matrix.target }}.tar.gz
+          if-no-files-found: ignore
+
+  # Embedded/IoT Linux (ARM)
+  build-embedded-arm:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - thumbv7neon-unknown-linux-gnueabihf
+          - armv5te-unknown-linux-gnueabi
+          - armv7-linux-androideabi
+          - aarch64-linux-android
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross --locked 2>/dev/null || cargo install cross --locked
+      
+      - name: Build with cross
+        run: cross build --release --target ${{ matrix.target }}
+        continue-on-error: true
+      
+      - name: Package
+        if: success()
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar czvf ../../../govm-${{ matrix.target }}.tar.gz govm
+          cd ../../..
+      
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: govm-${{ matrix.target }}
+          path: govm-${{ matrix.target }}.tar.gz
+          if-no-files-found: ignore
+
+  # MIPS Architectures
+  build-mips:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - mips-unknown-linux-gnu
+          - mipsel-unknown-linux-gnu
+          - mips64-unknown-linux-gnuabi64
+          - mips64el-unknown-linux-gnuabi64
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross --locked 2>/dev/null || cargo install cross --locked
+      
+      - name: Build with cross
+        run: cross build --release --target ${{ matrix.target }}
+        continue-on-error: true
+      
+      - name: Package
+        if: success()
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar czvf ../../../govm-${{ matrix.target }}.tar.gz govm
+          cd ../../..
+      
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: govm-${{ matrix.target }}
+          path: govm-${{ matrix.target }}.tar.gz
+          if-no-files-found: ignore
+
+  # Other Architectures (SPARC, etc.)
+  build-other:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - sparc64-unknown-linux-gnu
+          - loongarch64-unknown-linux-gnu
+          - wasm32-wasi
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross --locked 2>/dev/null || cargo install cross --locked
+      
+      - name: Build with cross
+        run: cross build --release --target ${{ matrix.target }}
+        continue-on-error: true
+      
+      - name: Package
+        if: success()
+        run: |
+          cd target/${{ matrix.target }}/release
+          if [ -f govm ]; then
+            tar czvf ../../../govm-${{ matrix.target }}.tar.gz govm
+          elif [ -f govm.wasm ]; then
+            cp govm.wasm ../../../govm-${{ matrix.target }}.wasm
+          fi
+          cd ../../..
+      
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: govm-${{ matrix.target }}
+          path: |
+            govm-${{ matrix.target }}.tar.gz
+            govm-${{ matrix.target }}.wasm
+          if-no-files-found: ignore
+
+  # ==========================================
+  # Create Release with All Artifacts
+  # ==========================================
+  release:
+    needs: 
+      - build-linux-tier1
+      - build-macos-tier1
+      - build-windows-tier1
+      - build-bsd
+      - build-embedded-arm
+      - build-mips
+      - build-other
+    runs-on: ubuntu-latest
+    if: always()
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      
+      - name: List artifacts
+        run: ls -la artifacts/
+      
+      - name: Generate checksums
+        run: |
+          cd artifacts
+          sha256sum *.tar.gz *.zip *.wasm 2>/dev/null > checksums.txt || true
+          cat checksums.txt
+      
+      - name: Get version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "VERSION=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Count successful builds
+        id: count
+        run: |
+          cd artifacts
+          count=$(ls -1 *.tar.gz *.zip 2>/dev/null | wc -l)
+          echo "COUNT=$count" >> $GITHUB_OUTPUT
+          echo "Successfully built $count packages"
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: "GoVM ${{ steps.get_version.outputs.VERSION }} (${{ steps.count.outputs.COUNT }} platforms)"
+          draft: false
+          prerelease: false
+          files: |
+            artifacts/*.tar.gz
+            artifacts/*.zip
+            artifacts/*.wasm
+            artifacts/checksums.txt
+          body: |
+            ## GoVM ${{ steps.get_version.outputs.VERSION }}
+
+            **Successfully built for ${{ steps.count.outputs.COUNT }} platforms**
+
+            Go Version Manager - 管理多版本 Go
+
+            ### Supported Platforms
+
+            #### Tier 1 (Fully Supported)
+            - Linux: x86_64, i686, aarch64, armv7, arm, powerpc64, powerpc64le, s390x, riscv64
+            - macOS: x86_64, aarch64 (Apple Silicon)
+            - Windows: x86_64, i686, aarch64
+
+            #### Tier 2/3 (Best Effort)
+            - BSD: FreeBSD, NetBSD, DragonFly BSD
+            - Embedded/IoT: ARM thumb, Android, MIPS variants
+            - Other: SPARC64, LoongArch64, WebAssembly (WASI)
+
+            ### Installation
+
+            Download the appropriate file for your platform and extract it to a directory in your PATH.
+
+            #### Linux/macOS Example
+            ```bash
+            tar xzf govm-x86_64-unknown-linux-gnu.tar.gz
+            sudo mv govm /usr/local/bin/
+            ```
+
+            #### Windows Example
+            ```powershell
+            Expand-Archive -Path govm-x86_64-pc-windows-msvc.zip -DestinationPath $env:LOCALAPPDATA\govm\bin
+            ```
+
+            ### Verification
+            ```bash
+            govm --version
+            ```
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

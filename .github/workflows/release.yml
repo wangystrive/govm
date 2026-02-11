@@ -10,176 +10,211 @@ on:
         description: 'Version to release (e.g., v0.1.0)'
         required: true
         default: 'v0.1.0'
+      all_platforms:
+        description: 'Build for all platforms (including tier 2/3)'
+        type: boolean
+        default: false
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  # 构建 Linux x86_64 GNU 版本
-  build-linux-gnu:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Build
-        run: cargo build --release
-
-      - name: Package
-        run: |
-          cd target/release
-          tar czvf ../../govm-x86_64-unknown-linux-gnu.tar.gz govm
-          cd ../..
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: govm-x86_64-unknown-linux-gnu
-          path: govm-x86_64-unknown-linux-gnu.tar.gz
-
-  # 构建 Linux x86_64 musl 版本
-  build-linux-musl:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: x86_64-unknown-linux-musl
-
-      - name: Install musl tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y musl-tools
-
-      - name: Build
-        run: cargo build --release --target x86_64-unknown-linux-musl
-
-      - name: Package
-        run: |
-          cd target/x86_64-unknown-linux-musl/release
-          tar czvf ../../../govm-x86_64-unknown-linux-musl.tar.gz govm
-          cd ../../..
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: govm-x86_64-unknown-linux-musl
-          path: govm-x86_64-unknown-linux-musl.tar.gz
-
-  # 构建 Linux ARM64 版本
-  build-linux-arm64:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: aarch64-unknown-linux-gnu
-
-      - name: Install cross-compilation tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-aarch64-linux-gnu
-
-      - name: Build
-        run: cargo build --release --target aarch64-unknown-linux-gnu
-        env:
-          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
-
-      - name: Package
-        run: |
-          cd target/aarch64-unknown-linux-gnu/release
-          tar czvf ../../../govm-aarch64-unknown-linux-gnu.tar.gz govm
-          cd ../../..
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: govm-aarch64-unknown-linux-gnu
-          path: govm-aarch64-unknown-linux-gnu.tar.gz
-
-  # 构建 macOS 版本
-  build-macos:
-    runs-on: macos-latest
+  # ==========================================
+  # Define the platform matrix
+  # ==========================================
+  
+  # Tier 1 platforms - Guaranteed to work
+  build-tier1:
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        target:
-          - x86_64-apple-darwin
-          - aarch64-apple-darwin
+        include:
+          # Linux x86_64
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+            cross: false
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-latest
+            cross: true
+          # Linux ARM64
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+            cross: true
+          - target: aarch64-unknown-linux-musl
+            os: ubuntu-latest
+            cross: true
+          # Linux ARM
+          - target: armv7-unknown-linux-gnueabihf
+            os: ubuntu-latest
+            cross: true
+          # macOS
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            cross: false
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            cross: false
+          # Windows
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            cross: false
+          - target: i686-pc-windows-msvc
+            os: windows-latest
+            cross: false
+          - target: aarch64-pc-windows-msvc
+            os: windows-latest
+            cross: false
     steps:
       - uses: actions/checkout@v4
-
+      
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
-
-      - name: Build
+      
+      - name: Install cross (if needed)
+        if: matrix.cross
+        run: cargo install cross --locked
+      
+      - name: Build (native)
+        if: ${{ !matrix.cross }}
         run: cargo build --release --target ${{ matrix.target }}
-
-      - name: Package
+      
+      - name: Build (cross)
+        if: matrix.cross
+        run: cross build --release --target ${{ matrix.target }}
+      
+      - name: Package (Unix)
+        if: runner.os != 'Windows'
         run: |
           cd target/${{ matrix.target }}/release
           tar czvf ../../../govm-${{ matrix.target }}.tar.gz govm
           cd ../../..
-
-      - name: Upload artifact
+      
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          cd target/${{ matrix.target }}/release
+          Compress-Archive -Path govm.exe -DestinationPath ../../../govm-${{ matrix.target }}.zip
+          cd ../../..
+      
+      - name: Upload artifact (Unix)
+        if: runner.os != 'Windows'
         uses: actions/upload-artifact@v4
         with:
           name: govm-${{ matrix.target }}
           path: govm-${{ matrix.target }}.tar.gz
-
-  # 构建 Windows 版本
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Build
-        run: cargo build --release
-
-      - name: Package
-        shell: pwsh
-        run: |
-          cd target/release
-          Compress-Archive -Path govm.exe -DestinationPath ../../govm-x86_64-pc-windows-msvc.zip
-          cd ../..
-
-      - name: Upload artifact
+          if-no-files-found: ignore
+      
+      - name: Upload artifact (Windows)
+        if: runner.os == 'Windows'
         uses: actions/upload-artifact@v4
         with:
-          name: govm-x86_64-pc-windows-msvc
-          path: govm-x86_64-pc-windows-msvc.zip
+          name: govm-${{ matrix.target }}
+          path: govm-${{ matrix.target }}.zip
+          if-no-files-found: ignore
 
-  # 创建 Release
-  release:
-    needs: [build-linux-gnu, build-linux-musl, build-linux-arm64, build-macos, build-windows]
+  # ==========================================
+  # Tier 2/3 platforms - Best effort
+  # ==========================================
+  build-tier2:
     runs-on: ubuntu-latest
+    if: github.event.inputs.all_platforms == 'true'
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          # More Linux architectures
+          - i686-unknown-linux-gnu
+          - i686-unknown-linux-musl
+          - arm-unknown-linux-gnueabihf
+          - arm-unknown-linux-musleabihf
+          - thumbv7neon-unknown-linux-gnueabihf
+          # MIPS
+          - mips-unknown-linux-gnu
+          - mipsel-unknown-linux-gnu
+          - mips64-unknown-linux-gnuabi64
+          - mips64el-unknown-linux-gnuabi64
+          # PowerPC
+          - powerpc-unknown-linux-gnu
+          - powerpc64-unknown-linux-gnu
+          - powerpc64le-unknown-linux-gnu
+          # RISC-V
+          - riscv64gc-unknown-linux-gnu
+          # s390x (IBM Z)
+          - s390x-unknown-linux-gnu
+          # SPARC
+          - sparc64-unknown-linux-gnu
+          # LoongArch
+          - loongarch64-unknown-linux-gnu
+          # BSD
+          - x86_64-unknown-freebsd
+          - x86_64-unknown-netbsd
+          # Android
+          - aarch64-linux-android
+          - armv7-linux-androideabi
+          - x86_64-linux-android
+          - i686-linux-android
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      
+      - name: Install cross
+        run: cargo install cross --locked
+      
+      - name: Build with cross
+        run: cross build --release --target ${{ matrix.target }}
+        continue-on-error: true
+      
+      - name: Package
+        if: success()
+        run: |
+          cd target/${{ matrix.target }}/release
+          tar czvf ../../../govm-${{ matrix.target }}.tar.gz govm
+          cd ../../..
+      
+      - name: Upload artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: govm-${{ matrix.target }}
+          path: govm-${{ matrix.target }}.tar.gz
+          if-no-files-found: ignore
+
+  # ==========================================
+  # Create Release
+  # ==========================================
+  release:
+    needs: [build-tier1, build-tier2]
+    runs-on: ubuntu-latest
+    if: always()
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
-
+      
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
           merge-multiple: true
-
+      
+      - name: List artifacts
+        run: ls -la artifacts/
+      
       - name: Generate checksums
         run: |
           cd artifacts
-          sha256sum * > checksums.txt
+          sha256sum *.tar.gz *.zip 2>/dev/null > checksums.txt || true
           cat checksums.txt
-
+          echo "Total packages: $(ls -1 *.tar.gz *.zip 2>/dev/null | wc -l)"
+      
       - name: Get version
         id: get_version
         run: |
@@ -188,7 +223,7 @@ jobs:
           else
             echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
           fi
-
+      
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
@@ -205,31 +240,24 @@ jobs:
 
             Go Version Manager - 管理多版本 Go
 
-            ### 安装
+            ### Installation
 
-            #### Linux/macOS
+            Download the appropriate file for your platform and extract it:
+
+            **Linux/macOS:**
             ```bash
-            # 下载对应平台的 tar.gz 文件
-            tar xzf govm-*-*.tar.gz
+            tar xzf govm-<target>.tar.gz
             sudo mv govm /usr/local/bin/
             ```
 
-            #### Windows
+            **Windows:**
             ```powershell
-            # 下载对应平台的 zip 文件
-            # 解压后将 govm.exe 添加到 PATH
+            Expand-Archive -Path govm-<target>.zip -DestinationPath C:\path\to\bin
             ```
 
-            ### 支持的架构
+            ### Supported Platforms
 
-            | 平台 | 架构 | 文件名 |
-            |------|------|--------|
-            | Linux | x86_64 (gnu) | govm-x86_64-unknown-linux-gnu.tar.gz |
-            | Linux | x86_64 (musl) | govm-x86_64-unknown-linux-musl.tar.gz |
-            | Linux | ARM64 | govm-aarch64-unknown-linux-gnu.tar.gz |
-            | macOS | x86_64 | govm-x86_64-apple-darwin.tar.gz |
-            | macOS | Apple Silicon | govm-aarch64-apple-darwin.tar.gz |
-            | Windows | x86_64 | govm-x86_64-pc-windows-msvc.zip |
+            This release includes builds for Tier 1 platforms (guaranteed) and Tier 2/3 platforms (best effort).
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
