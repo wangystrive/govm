@@ -1,0 +1,28 @@
+# Rust build artifacts
+/target
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing artifacts
+*.log
+
+# Distribution builds
+dist/
+*.tar.gz
+*.zip
+
+# Cross compilation
+.cross/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
