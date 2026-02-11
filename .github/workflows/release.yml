@@ -214,11 +214,9 @@ jobs:
           body: |
             ## GoVM ${{ steps.get_version.outputs.VERSION }}
 
-            Go Version Manager - 管理多版本 Go
+            Go Version Manager
 
             ### Supported Platforms
-
-            GoVM is available for all platforms supported by Go:
 
             **Linux:**
             - `govm-linux-amd64.tar.gz` - x86_64 (64-bit)
@@ -237,27 +235,6 @@ jobs:
 
             **FreeBSD:**
             - `govm-freebsd-amd64.tar.gz` - x86_64 (64-bit)
-
-            ### Installation
-
-            **Linux/macOS:**
-            ```bash
-            # Download and extract
-tar xzf govm-linux-amd64.tar.gz
-            sudo mv govm /usr/local/bin/
-            ```
-
-            **Windows:**
-            ```powershell
-            # Download and extract
-            Expand-Archive -Path govm-windows-amd64.zip -DestinationPath $env:LOCALAPPDATA\govm\bin
-            ```
-
-            **FreeBSD:**
-            ```bash
-            tar xzf govm-freebsd-amd64.tar.gz
-            sudo mv govm /usr/local/bin/
-            ```
 
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
