@@ -1,126 +1,114 @@
 # Supported Platforms
 
-GoVM aims to support all platforms that Rust supports. This document lists the target platforms and their support status.
+GoVM supports the same platforms as the official Go distribution.
 
-## Tier 1 Platforms (Fully Supported)
+## Official Go Platforms
 
-These platforms are tested and guaranteed to work:
+| OS | Architecture | Rust Target | Download Filename |
+|----|-------------|-------------|-------------------|
+| **Linux** | amd64 (x86_64) | `x86_64-unknown-linux-gnu` | `govm-linux-amd64.tar.gz` |
+| **Linux** | 386 (x86) | `i686-unknown-linux-gnu` | `govm-linux-386.tar.gz` |
+| **Linux** | arm64 | `aarch64-unknown-linux-gnu` | `govm-linux-arm64.tar.gz` |
+| **Linux** | armv6l | `arm-unknown-linux-gnueabihf` | `govm-linux-armv6l.tar.gz` |
+| **macOS** | amd64 (Intel) | `x86_64-apple-darwin` | `govm-darwin-amd64.tar.gz` |
+| **macOS** | arm64 (Apple Silicon) | `aarch64-apple-darwin` | `govm-darwin-arm64.tar.gz` |
+| **Windows** | amd64 | `x86_64-pc-windows-msvc` | `govm-windows-amd64.zip` |
+| **Windows** | 386 | `i686-pc-windows-msvc` | `govm-windows-386.zip` |
+| **Windows** | arm64 | `aarch64-pc-windows-msvc` | `govm-windows-arm64.zip` |
+| **FreeBSD** | amd64 | `x86_64-unknown-freebsd` | `govm-freebsd-amd64.tar.gz` |
 
-| Platform | Target | Status | Artifact |
-|----------|--------|--------|----------|
-| Linux x86_64 (GNU) | `x86_64-unknown-linux-gnu` | ✅ | `.tar.gz` |
-| Linux x86_64 (musl) | `x86_64-unknown-linux-musl` | ✅ | `.tar.gz` |
-| Linux ARM64 (GNU) | `aarch64-unknown-linux-gnu` | ✅ | `.tar.gz` |
-| Linux ARM64 (musl) | `aarch64-unknown-linux-musl` | ✅ | `.tar.gz` |
-| Linux ARMv7 | `armv7-unknown-linux-gnueabihf` | ✅ | `.tar.gz` |
-| macOS x86_64 | `x86_64-apple-darwin` | ✅ | `.tar.gz` |
-| macOS ARM64 | `aarch64-apple-darwin` | ✅ | `.tar.gz` |
-| Windows x86_64 | `x86_64-pc-windows-msvc` | ✅ | `.zip` |
-| Windows x86 | `i686-pc-windows-msvc` | ✅ | `.zip` |
-| Windows ARM64 | `aarch64-pc-windows-msvc` | ✅ | `.zip` |
+## Platform Notes
 
-## Tier 2 Platforms (Best Effort)
+### Linux
 
-These platforms are built but may have limited testing:
+- **amd64**: Most common desktop/server Linux (Intel/AMD 64-bit)
+- **386**: 32-bit x86 systems (older hardware)
+- **arm64**: ARM 64-bit (Raspberry Pi 4, AWS Graviton, Apple M1 Linux VMs)
+- **armv6l**: ARM 32-bit (Raspberry Pi Zero, older ARM boards)
 
-### Additional Linux Architectures
+### macOS
 
-| Platform | Target | Status | Notes |
-|----------|--------|--------|-------|
-| Linux x86 | `i686-unknown-linux-gnu` | 🟡 | 32-bit x86 |
-| Linux x86 (musl) | `i686-unknown-linux-musl` | 🟡 | 32-bit x86 with musl |
-| Linux ARM | `arm-unknown-linux-gnueabihf` | 🟡 | ARMv6/ARMv7 |
-| Linux ARM (musl) | `arm-unknown-linux-musleabihf` | 🟡 | ARM with musl |
-| Linux Thumb | `thumbv7neon-unknown-linux-gnueabihf` | 🟡 | ARM with NEON |
+- **amd64**: Intel-based Macs (2015-2020)
+- **arm64**: Apple Silicon Macs (M1, M2, M3)
 
-### MIPS Architectures
+### Windows
 
-| Platform | Target | Status | Notes |
-|----------|--------|--------|-------|
-| Linux MIPS | `mips-unknown-linux-gnu` | 🟡 | Big-endian MIPS |
-| Linux MIPS (LE) | `mipsel-unknown-linux-gnu` | 🟡 | Little-endian MIPS |
-| Linux MIPS64 | `mips64-unknown-linux-gnuabi64` | 🟡 | 64-bit MIPS |
-| Linux MIPS64 (LE) | `mips64el-unknown-linux-gnuabi64` | 🟡 | 64-bit MIPS LE |
+- **amd64**: 64-bit Windows (most common)
+- **386**: 32-bit Windows
+- **arm64**: Windows on ARM (Surface Pro X, etc.)
 
-### PowerPC Architectures
+### FreeBSD
 
-| Platform | Target | Status | Notes |
-|----------|--------|--------|-------|
-| Linux PowerPC | `powerpc-unknown-linux-gnu` | 🟡 | 32-bit PowerPC |
-| Linux PowerPC64 | `powerpc64-unknown-linux-gnu` | 🟡 | 64-bit PowerPC BE |
-| Linux PowerPC64LE | `powerpc64le-unknown-linux-gnu` | 🟡 | 64-bit PowerPC LE |
+- **amd64**: 64-bit FreeBSD systems
 
-### Other Architectures
+## Installation
 
-| Platform | Target | Status | Notes |
-|----------|--------|--------|-------|
-| Linux RISC-V | `riscv64gc-unknown-linux-gnu` | 🟡 | RISC-V 64-bit |
-| Linux IBM Z | `s390x-unknown-linux-gnu` | 🟡 | IBM System Z |
-| Linux SPARC64 | `sparc64-unknown-linux-gnu` | 🟡 | SPARC 64-bit |
-| Linux LoongArch | `loongarch64-unknown-linux-gnu` | 🟡 | Loongson 64-bit |
-
-### BSD Systems
-
-| Platform | Target | Status | Notes |
-|----------|--------|--------|-------|
-| FreeBSD | `x86_64-unknown-freebsd` | 🟡 | FreeBSD x86_64 |
-| NetBSD | `x86_64-unknown-netbsd` | 🟡 | NetBSD x86_64 |
-
-### Android
-
-| Platform | Target | Status | Notes |
-|----------|--------|--------|-------|
-| Android ARM64 | `aarch64-linux-android` | 🟡 | Android ARM64 |
-| Android ARMv7 | `armv7-linux-androideabi` | 🟡 | Android ARMv7 |
-| Android x86_64 | `x86_64-linux-android` | 🟡 | Android x86_64 |
-| Android x86 | `i686-linux-android` | 🟡 | Android x86 |
-
-## Legend
-
-- ✅ **Fully Supported**: Tested and verified to work
-- 🟡 **Best Effort**: Compiled but limited testing
-- ❌ **Not Supported**: Known not to work
-
-## Platform-Specific Notes
-
-### Linux (GNU vs musl)
-
-- **GNU libc**: Standard for most Linux distributions (Ubuntu, Debian, Fedora, etc.)
-- **musl libc**: Lightweight libc for Alpine Linux and embedded systems
-
-If you're unsure which to use:
-- Use `gnu` for standard desktop/server Linux
-- Use `musl` for Alpine Linux or minimal containers
-
-### Windows MSVC vs GNU
-
-We currently only provide MSVC builds for Windows as they are the most compatible.
-
-### macOS Universal Binary
-
-While we provide separate x86_64 and ARM64 builds for macOS, macOS can run x86_64 binaries on Apple Silicon via Rosetta 2.
-
-## Requesting Additional Platforms
-
-If you need a platform that's not listed here, please:
-
-1. Check if Rust supports it: `rustup target list`
-2. Open an issue with the target name and use case
-3. We may add it to the build matrix
-
-## Building for Unsupported Platforms
-
-You can always build GoVM from source for any Rust-supported platform:
+### Linux/macOS/FreeBSD
 
 ```bash
-# Install the target
+# Download the appropriate file for your platform
+wget https://github.com/wangystrive/govm/releases/latest/download/govm-linux-amd64.tar.gz
+
+# Extract
+tar xzf govm-linux-amd64.tar.gz
+
+# Move to PATH
+sudo mv govm /usr/local/bin/
+```
+
+### Windows
+
+```powershell
+# Download
+Invoke-WebRequest -Uri "https://github.com/wangystrive/govm/releases/latest/download/govm-windows-amd64.zip" -OutFile "govm.zip"
+
+# Extract
+Expand-Archive -Path "govm.zip" -DestinationPath "$env:LOCALAPPDATA\govm\bin"
+
+# Add to PATH (User)
+[Environment]::SetEnvironmentVariable("Path", "$env:LOCALAPPDATA\govm\bin;$env:Path", "User")
+```
+
+## Verification
+
+```bash
+# Check version
+govm --version
+
+# List installed Go versions
+govm list
+
+# Install and use Go
+govm install 1.21.5
+govm use 1.21.5
+go version
+```
+
+## Comparison with Go Releases
+
+GoVM's release artifacts follow the same naming convention as Go official releases:
+
+| Component | Go | GoVM |
+|-----------|-----|------|
+| Linux amd64 | `go1.21.5.linux-amd64.tar.gz` | `govm-linux-amd64.tar.gz` |
+| macOS arm64 | `go1.21.5.darwin-arm64.tar.gz` | `govm-darwin-arm64.tar.gz` |
+| Windows amd64 | `go1.21.5.windows-amd64.zip` | `govm-windows-amd64.zip` |
+
+This makes it easy to script installations for both tools.
+
+## Building from Source
+
+If your platform is not listed above but Go supports it, you can build from source:
+
+```bash
+# Install Rust target
 rustup target add <target-triple>
 
 # Build
 cargo build --release --target <target-triple>
 ```
 
-For cross-compilation, we recommend using [cross](https://github.com/cross-rs/cross):
+For cross-compilation:
 
 ```bash
 cargo install cross

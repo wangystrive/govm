@@ -10,7 +10,7 @@
 - 🎯 **当前版本** - 显示当前激活的 Go 版本
 - 🔍 **系统兼容** - 检测并导入系统已安装的 Go
 - ⚠️ **冲突检测** - 自动检测 PATH 冲突并给出提示
-- 🌍 **全平台支持** - 支持 40+ 种平台架构（x86, ARM, MIPS, RISC-V, PowerPC 等）
+- 🌍 **全平台支持** - 支持 Go 官方支持的所有平台
 
 ## 安装
 
@@ -385,25 +385,16 @@ A:
 
 ### Q: 支持哪些操作系统？
 
-A: GoVM 支持 Rust 支持的所有平台，包括 40+ 种架构：
+A: GoVM 支持 Go 官方支持的所有平台：
 
-**主流平台（Tier 1）：**
-| 平台 | 架构 |
-|------|------|
-| Linux | x86_64, i686, ARM64, ARMv7, ARM |
-| macOS | x86_64, Apple Silicon |
-| Windows | x86_64, i686, ARM64 |
+| OS | 架构 |
+|----|------|
+| Linux | amd64, 386, arm64, armv6l |
+| macOS | amd64 (Intel), arm64 (Apple Silicon) |
+| Windows | amd64, 386, arm64 |
+| FreeBSD | amd64 |
 
-**其他架构（Tier 2/3）：**
-- MIPS (大端/小端, 32/64位)
-- PowerPC (32/64位, 大端/小端)
-- RISC-V 64位
-- IBM Z (s390x)
-- SPARC 64位
-- LoongArch 64位
-- FreeBSD, NetBSD
-
-详见 [PLATFORMS.md](PLATFORMS.md) 获取完整列表。
+详见 [PLATFORMS.md](PLATFORMS.md) 获取完整列表和安装说明。
 
 ### Q: 下载很慢怎么办？
 
