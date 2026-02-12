@@ -84,9 +84,9 @@ get_latest_version() {
     echo -e "${BLUE}Checking latest version...${NC}"
     
     if command -v curl &> /dev/null; then
-        LATEST=$(curl -s "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        LATEST=$(curl -s "https://api.github.com/repos/${REPO}/releases/latest" | sed -n 's/.*"tag_name": "\([^"]*\)".*/\1/p')
     elif command -v wget &> /dev/null; then
-        LATEST=$(wget -qO- "https://api.github.com/repos/${REPO}/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        LATEST=$(wget -qO- "https://api.github.com/repos/${REPO}/releases/latest" | sed -n 's/.*"tag_name": "\([^"]*\)".*/\1/p')
     else
         echo -e "${RED}curl or wget is required${NC}"
         exit 1
